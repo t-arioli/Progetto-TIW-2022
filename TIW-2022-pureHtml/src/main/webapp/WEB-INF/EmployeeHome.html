@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Home</title>
+	<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css" th:href="@{/CSS/mystyle.css}" />
+</head>
+<body>
+	<h1>Home</h1>
+	<p th:text="${'Bentornato ' + session.user.username}">Bentornato utente</p>
+	
+	<div id="quotes">
+		<h2>I tuoi preventivi</h2>
+		<div id="employee-quotes-list" class="list" th:if="${session.userQuotes != null}">
+			<h3>Lista preventivi</h3>
+				<table th:if="${session.userQuotes.size > 0}">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>CLIENTE</th>
+							<th>PRODOTTO</th>
+							<th>DATA CREAZIONE</th>
+							<th>PREZZO ASSEGNATO</th>
+							<th>DATA VALIDAZIONE</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${session.userQuotes}">
+							<td th:text="${p.id}">0</td>
+							<td th:text="${p.client.username}">Cliente</td>
+							<td th:text="${p.product.name}">Prodotto</td>
+							<td th:text="${p.dateCreation}">1970-01-01</td>
+							<td th:text="${p.price}">0.00</td>
+							<td th:text="${p.dateValidation}">1970-01-01</td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification" th:if="${session.userQuotes.isEmpty}"> Non ci sono preventivi da visualizzare</p>	
+		</div>  
+	</div>
+	
+	<div id="new-quote">
+		<h2>Nuovi preventivi disponibili</h2>
+		<div id="employee-quotes-list" class="list" th:if="${session.newQuotes != null}">
+			<h3>Lista preventivi</h3>
+				<table th:if="${session.newQuotes.size > 0}" >
+					<thead>
+						<tr>
+							<th>DATA CREAZIONE</th>
+							<th>CLIENTE</th>
+							<th>PRODOTTO</th>
+							<th>AGGIUNGI PREZZO</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${session.newQuotes}">
+							<td th:text="${p.dateCreation}">1970-01-01</td>
+							<td th:text="${p.client.username}">Cliente</td>
+							<td th:text="${p.product.name}">Prodotto</td>
+							<td><a th:href="@{/GetQuoteDetails(prevId=${p.id})}" th:text="'Aggiungi prezzo'">Aggiungi prezzo</a></td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification" th:if="${session.newQuotes.isEmpty}">Non ci sono nuovi preventivi</p>
+		</div>  
+	</div>
+	
+	<div id="logout">
+		<h2>Sessione</h2>
+		<form th:action="@{/Logout}" method="GET">
+			<input type="submit" value="Esci">
+		</form>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>Login</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css" th:href="@{/CSS/mystyle.css}"/>
+</head>
+<body>
+	<h1>Benvenuto</h1>
+	
+	<div id="login" class="form">
+	<h2>Accedi</h2>
+		<form th:action="@{/Login}" method="POST">
+			Username: <input type="text" name="username" required><br>
+			Password: <input type="password" name="password" required><br><br>
+			<input type="submit" value="Accedi"><br>
+			<p id="notification"th:text="${errorMessage}">Messaggio di errore dal server</p>
+		</form>
+	</div>
+	
+	<div id="register" class="form">
+	<h2>Registrati</h2>
+		<form th:action="@{/Register}" method="POST">
+			Email: <input type="text" name="username" required><br>
+			Scegli una password: <input type="text" name="password" required><br>
+			Conferma la password: <input type="text" name="passwordConfirm" required><br>
+			<input type="submit" value="Registrati"><br>
+			<p id="notification" th:text="${signupMessage}">Messaggio di risposta dal server</p>
+		</form>
+	</div>
+	
+</body>
+</html>

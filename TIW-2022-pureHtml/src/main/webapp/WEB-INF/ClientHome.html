@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Home</title>
+		<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css" th:href="@{/CSS/mystyle.css}" />
+	</head>
+<body>
+	<h1>Home</h1>
+	<p th:text="${'Bentornato '+session.user.username}">Bentornato utente</p>
+	
+	<div id="quotes">	
+		<h2>I tuoi preventivi</h2>
+		<div id="client-quotes-list" class="list" th:if="${session.userQuotes != null}">
+			<h3>Lista preventivi</h3>
+				<table th:if="${session.userQuotes.size > 0}" >
+					<thead>
+						<tr>
+							<th>DATA</th>
+							<th>PREZZO ASSEGNATO</th>
+							<th>DETTAGLI</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${session.userQuotes}">
+							<td th:text="${p.dateCreation} ?: 'Nessuna data registrata'">1970-01-01</td>
+							<td th:text="${p.price} ?: 'Nessun prezzo ancora assegnato'">0.00</td>
+							<td><a th:href="@{/GetQuoteDetails(prevId=${p.id})}" th:text="'Visualizza dettagli'">Dettagli</a></td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification" th:if="${session.userQuotes.isEmpty}">Non ci sono preventivi da mostrare</p>
+		</div>
+
+		<div id="quote-details" class="info" th:if="${session.chosenQuote != null}">
+		<h3>Dettagli</h3>
+			<table>
+				<tbody>
+					<tr>
+						<td>PRODOTTO</td>
+						<td th:text="${session.chosenQuote.product.name} ?: 'Nessun nome'">Prodotto</td>
+					</tr>
+					<tr>
+						<td>IMMAGINE</td>
+						<td><img id="image" th:src="@{'/IMAGES/'+${session.chosenQuote.product.imageUrl}}" src="../IMAGES/default.jpg"></td>
+					</tr>
+					<tr>
+						<td>DATA CREAZIONE</td>
+						<td th:text="${session.chosenQuote.dateCreation}">1970-01-01</td>
+					</tr>
+					<tr>
+						<td>DATA VALIDAZIONE</td>
+						<td th:text="${session.chosenQuote.dateValidation}">1970-01-01</td>
+					</tr>
+					<tr>
+						<td>PREZZO ASSEGNATO</td>
+						<td th:text="${session.chosenQuote.price} ?: 'Nessun prezzo ancora assegnato'">0.00</td>
+					</tr>
+					<tr>
+						<td>OPZIONI AGGIUNTE</td>
+						<td><ul th:each="c: ${session.chosenQuote.options}"><li th:text="${c.isOnSale} ? ${c.name}+' (In offerta)' : ${c.name}+' (Normale)'">Opzione</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="new-quote">	
+		<h2>Crea nuovo preventivo</h2>
+		<div id="products-list" class="list">
+			<h3>Lista prodotti</h3>
+			<a th:href="@{/GetProductsList}" th:text="'Clicca per ricaricare prodotti'">Carica lista prodotti</a> 
+			<div class="list-table" th:if="${session.productsList != null}">
+				<table>
+					<thead>
+						<tr>
+							<th>NOME</th>
+							<th>IMMAGINE</th>
+							<th>SELEZIONA</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="p : ${session.productsList}">
+							<td th:text="${p.name}">Prodotto</td>
+							<td><img id="image" th:src="@{'/IMAGES/'+${p.imageUrl}}" src="../IMAGES/default.jpg"></td>
+							<td><a th:href="@{/ChooseProduct(productId=${p.code})}" >Seleziona</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<p th:if="${session.productsList.isEmpty}" id="notification">Non ci sono prodotti disponibili. Riprova più tardi</p>
+			</div>
+		</div>
+
+		<div id="create-quote" class="info" th:if="${session.product != null}">
+			<h3>Nuovo preventivo</h3>
+			<table>
+				<tbody>
+					<tr>
+						<td>PRODOTTO SCELTO:</td>
+						<td th:text="${session.product.name}">Prodotto</td>
+					</tr>
+					<tr>
+						<td>IMMAGINE:</td>
+						<td>
+							<img id="image" th:src="@{'/IMAGES/'+${session.product.imageUrl}}" src="../IMAGES/default.jpg">
+						</td>
+					</tr>
+					<tr th:if="${session.chosenOptions != null}">
+						<td>OPZIONI SCELTE:</td>
+						<td><ul th:each="c: ${session.chosenOptions}">
+							<li th:text="${c.isOnSale} ? ${c.name}+' (In offerta)' : ${c.name}+' (Normale)'">Opzione</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+			Scegli una o diverse opzioni per il prodotto tra le seguenti:
+			<ul><li th:each="o: ${session.availableOptions}"><a th:href="@{/AddOption(optionCode=${o.code})}" th:text="${o.name}">
+			Opzione</a></li></ul>
+
+			<form th:if="${session.product != null && session.chosenOptions != null}" th:action="@{/CreateQuote}" method="POST">
+				<input type="submit" value="Invia Preventivo">
+			</form>
+		</div>
+	</div>
+
+	<div id="logout">
+		<h2>Sessione</h2>
+		<form th:action="@{/Logout}" method="GET">
+			<input type="submit" value="Esci">
+		</form>
+	</div>
+	
+</body>
+</html>

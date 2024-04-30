@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+version="4.0">
+	<display-name>TIW-2022-pureHtml</display-name>
+	<!--JDBC-->
+  	<context-param>
+		<param-name>dbUrl</param-name>
+		<param-value>jdbc:mysql://localhost:3306/db_tiw_2022?serverTimezone=UTC</param-value>
+	</context-param>
+  	<context-param>
+		<param-name>dbUser</param-name>
+    	<param-value>root</param-value>
+  	</context-param>
+  	<context-param>
+    	<param-name>dbPassword</param-name>
+    	<param-value>toortoor</param-value>
+  	</context-param>
+  	<context-param>
+    	<param-name>dbDriver</param-name>
+    	<param-value>com.mysql.cj.jdbc.Driver</param-value>
+	</context-param>
+	<error-page>
+		<location>/ErrorHandler</location>
+	 </error-page>
+	<!--SERVLET FILTER-->
+ 	<filter> 
+    	<filter-name>LoginFilter</filter-name>
+		<filter-class>it.project.filters.LoginFilter</filter-class> 
+ 	</filter> 
+ 	<filter-mapping> 
+    	<filter-name>LoginFilter</filter-name> 
+    	<url-pattern>/Home</url-pattern> 
+    	<url-pattern>/GetQuoteDetails/*</url-pattern>
+    	<url-pattern>/GetProductsList</url-pattern>
+    	<url-pattern>/ChooseProduct/*</url-pattern>
+    	<url-pattern>/CreateQuote</url-pattern>
+    	<url-pattern>/AddOption</url-pattern>
+    	<url-pattern>/AddPrice/*</url-pattern>
+ 	</filter-mapping> 
+ 	<filter>
+		<filter-name>NoCacheFilter</filter-name>
+		<filter-class>it.project.filters.NoCacheFilter</filter-class> 
+	</filter>	
+ 	<filter-mapping> 
+    	<filter-name>NoCacheFilter</filter-name> 
+    	<url-pattern>/Login</url-pattern>
+ 	</filter-mapping> 
+ 	<!--WELCOME FILE-->
+	<welcome-file-list>
+    	<welcome-file>Login</welcome-file>
+    </welcome-file-list>
+</web-app>
