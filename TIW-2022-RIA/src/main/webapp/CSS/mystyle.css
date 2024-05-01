@@ -1,0 +1,130 @@
+@charset "UTF-8";
+table, th, td{
+	border: 1px solid black;
+	word-wrap: break-word;
+	text-align: center;
+	overflow: hidden;
+}
+body{
+	margin-left: 5%;
+	margin-right: 5%;
+}
+h3{
+	text-align: center;
+}
+#image {
+  width: 100px;
+  height: 100px;
+}
+#notification{
+	color:red;
+}
+.form {
+	position: relative;
+	background-color: Azure; 
+
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 10px;
+
+	margin-bottom: 5%;
+
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+
+	overflow: scroll;
+}
+.info{
+	position: relative;
+	background-color: gainsboro; 
+
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 10px;
+
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+
+	margin-bottom: 5%;
+
+	overflow: scroll;
+}
+.list{
+	position: relative;
+	background-color: Azure; 
+	
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 10px;
+	
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+
+	margin-bottom: 5%;
+
+	overflow: scroll;
+}
+.list .list-table{
+	width: 100%;
+}
+#login{
+	float: left;
+	display: block;
+	width: 45%;
+	text-align: justify;
+}
+#register{
+	float: right;
+	display: block;
+	width: 45%;
+	text-align: justify;
+}
+#quotes{
+	overflow: scroll;
+}
+#client-quotes-list{
+	float: left;
+	display: block;
+	margin-right: 5%;
+	width: 45%;
+}
+#employee-quotes-list{
+	float: left;
+	display: block;
+	margin-right: 5%;
+	width: 98%;
+}
+#quote-details{
+	float: left;
+	display: block;
+	width: 45%;
+}
+#employee-quote-details{
+	float: left;
+	display: block;
+	width: 98%;
+}
+#new-quote{
+	overflow: scroll;
+}
+#products-list{
+	float: left;
+	display: block;
+	margin-right: 5%;
+	width: 45%;
+}
+#create-quote{
+	float: left;
+	display: block;
+	width: 45%;
+}
+#logout{
+	background-color: gainsboro;
+	position: absolute; 
+  width: 90%;
+  text-align: center;
+  align-content: center;
+}

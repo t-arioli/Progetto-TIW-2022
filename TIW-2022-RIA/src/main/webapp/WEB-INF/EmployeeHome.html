@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Home</title>
+	<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css"/>
+</head>
+<body>
+	<h1>Home</h1>
+	<p>Bentornato utente</p>
+	
+	<div id="quotes">
+		<h2>I tuoi preventivi</h2>
+		<div id="employee-quotes-list" class="list">
+			<h3>Lista preventivi</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>CLIENTE</th>
+							<th>PRODOTTO</th>
+							<th>DATA CREAZIONE</th>
+							<th>PREZZO ASSEGNATO</th>
+							<th>DATA VALIDAZIONE</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>0</td>
+							<td>Cliente</td>
+							<td>Prodotto</td>
+							<td>1970-01-01</td>
+							<td>0.00</td>
+							<td>1970-01-01</td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification"> Non ci sono preventivi da visualizzare</p>	
+		</div>  
+	</div>
+	
+	<div id="new-quote">
+		<h2>Nuovi preventivi disponibili</h2>
+		<div id="employee-quotes-list" class="list">
+			<h3>Lista preventivi</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>DATA CREAZIONE</th>
+							<th>CLIENTE</th>
+							<th>PRODOTTO</th>
+							<th>AGGIUNGI PREZZO</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1970-01-01</td>
+							<td>Cliente</td>
+							<td>Prodotto</td>
+							<td><a href="GetQuoteDetails(prevId=">Aggiungi prezzo</a></td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification">Non ci sono nuovi preventivi</p>
+		</div>  
+	</div>
+	
+	<div id="logout">
+		<h2>Sessione</h2>
+		<form action="/Logout" method="GET">
+			<input type="submit" value="Esci">
+		</form>
+	</div>
+	
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="ISO-8859-1">
+		<title>Home</title>
+		<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css"/>
+	</head>
+<body>
+	<h1>Home</h1>
+	<p>Bentornato utente</p>
+	
+	<div id="quotes">	
+		<h2>I tuoi preventivi</h2>
+		<div id="client-quotes-list" class="list">
+			<h3>Lista preventivi</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>DATA</th>
+							<th>PREZZO ASSEGNATO</th>
+							<th>DETTAGLI</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>1970-01-01</td>
+							<td>0.00</td>
+							<td><a href="GetQuoteDetails">Dettagli</a></td>
+						</tr>
+					</tbody>
+				</table>
+			<p id="notification">Non ci sono preventivi da mostrare</p>
+		</div>
+
+		<div id="quote-details" class="info">
+		<h3>Dettagli</h3>
+			<table>
+				<tbody>
+					<tr>
+						<td>PRODOTTO</td>
+						<td>Prodotto</td>
+					</tr>
+					<tr>
+						<td>IMMAGINE</td>
+						<td><img id="image" src="../IMAGES/default.jpg"></td>
+					</tr>
+					<tr>
+						<td>DATA CREAZIONE</td>
+						<td>1970-01-01</td>
+					</tr>
+					<tr>
+						<td>DATA VALIDAZIONE</td>
+						<td>1970-01-01</td>
+					</tr>
+					<tr>
+						<td>PREZZO ASSEGNATO</td>
+						<td>0.00</td>
+					</tr>
+					<tr>
+						<td>OPZIONI AGGIUNTE</td>
+						<td><ul><li>Opzione</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="new-quote">	
+		<h2>Crea nuovo preventivo</h2>
+		<div id="products-list" class="list">
+			<h3>Lista prodotti</h3>
+			<a href="GetProductsList">Carica lista prodotti</a> 
+			<div class="list-table">
+				<table>
+					<thead>
+						<tr>
+							<th>NOME</th>
+							<th>IMMAGINE</th>
+							<th>SELEZIONA</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>Prodotto</td>
+							<td><img id="image" src="../IMAGES/default.jpg"></td>
+							<td><a href="ChooseProduct" >Seleziona</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<p id="notification">Non ci sono prodotti disponibili. Riprova più tardi</p>
+			</div>
+		</div>
+
+		<div id="create-quote" class="info">
+			<h3>Nuovo preventivo</h3>
+			<table>
+				<tbody>
+					<tr>
+						<td>PRODOTTO SCELTO:</td>
+						<td>Prodotto</td>
+					</tr>
+					<tr>
+						<td>IMMAGINE:</td>
+						<td>
+							<img id="image" src="../IMAGES/default.jpg">
+						</td>
+					</tr>
+					<tr>
+						<td>OPZIONI SCELTE:</td>
+						<td><ul>
+							<li>Opzione</li></ul></td>
+					</tr>
+				</tbody>
+			</table>
+			<br>
+			Scegli una o diverse opzioni per il prodotto tra le seguenti:
+			<ul><li><a href="AddOption">
+			Opzione</a></li></ul>
+
+			<form action="CreateQuote" method="POST">
+				<input type="submit" value="Invia Preventivo">
+			</form>
+		</div>
+	</div>
+
+	<div id="logout">
+		<h2>Sessione</h2>
+		<form action="Logout" method="GET">
+			<input type="submit" value="Esci">
+		</form>
+	</div>
+	
+</body>
+</html>
