@@ -4,21 +4,22 @@
 	.addEventListener(
 		'click', 
 		(e) => {
-			if(e.target.closest("form").checkValidity()){
+			var form = e.target.closest("form");
+			if(form.checkValidity()){
 				makeCall(
 					"POST", 
 					"Login", 
-					e.target.closest("form"),
+					form,
 					function (res){
 						if(res.readyState == XMLHttpRequest.DONE) {	
 							switch (res.status) {
 								case 200:
-									var user = JSON.parse(req.responseText);
+									var user = JSON.parse(res.responseText);
 									sessionStorage.setItem('user', user);
 									if (user.isAdmin)
 										window.location.href = "EmployeeHome.html";
 									else
-										window.location.href = "ClientHome.html;"
+										window.location.href = "ClientHome.html";
 									break;
 								case 400: // bad request
 									document.getElementById("loginMessage").textContent = res.responseText;

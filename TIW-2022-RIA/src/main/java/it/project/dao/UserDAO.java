@@ -69,18 +69,23 @@ public class UserDAO {
 		String query = "SELECT `username` FROM `user` WHERE `username` = ? AND `isClient` = true";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
+		boolean alreadyPres = false;
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, username);
 			resultSet = pStatement.executeQuery();
 
 			if (resultSet.next()) {
+				alreadyPres = true;
 				throw new SQLException("Username already present");
 			}
 			return false;
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			throw new SQLException(e.getMessage());
+			String message = "";
+			if(alreadyPres)
+				message = e.getMessage();
+			throw new SQLException(message);
 		} finally {
 			try {
 				if (resultSet != null) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +18,7 @@ import it.project.utils.ConnectionHandler;
  * the DB then return to Login HTML page
  */
 @WebServlet("/Register")
+@MultipartConfig
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
@@ -77,13 +79,13 @@ public class Register extends HttpServlet {
 					response.getWriter().println("Success!");
 				}
 				else {
-					throw new SQLException();
+					throw new SQLException("Internal server error");
 				}
 				
 			}
 		}catch(SQLException e) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			response.getWriter().println("Internal server error");
+			response.getWriter().println(e.getMessage());
 			return;
 		}
 	}

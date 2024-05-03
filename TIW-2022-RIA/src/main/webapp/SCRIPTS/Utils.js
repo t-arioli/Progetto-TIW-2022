@@ -1,7 +1,9 @@
 function makeCall(method, url, formElement, callBack) {
+	
 	var req = new XMLHttpRequest(); 
 	var sendF = new FormData(formElement);
-	console.log(sendF.values);
+	//console.log(sendF);
+	
 	req.onreadystatechange = function() {
 		callBack(req)
 	}; 

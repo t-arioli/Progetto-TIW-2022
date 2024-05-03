@@ -4,10 +4,13 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringEscapeUtils;
 
 import com.google.gson.Gson;
 
@@ -20,6 +23,7 @@ import it.project.dao.UserDAO;
  * redirect to Home
  */
 @WebServlet("/Login")
+@MultipartConfig
 public class Login extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
@@ -55,9 +59,15 @@ public class Login extends HttpServlet {
 		UserDAO uDao = new UserDAO(connection);
 		User user = null;
 		//gets parameters
-		username = request.getParameter("username");
-		password = request.getParameter("password");
-		if (username.isEmpty() || password.isEmpty() || username == null || password == null) {
+		try {
+			//username = request.getParameter("username");
+			//password = request.getParameter("password");
+			 username = StringEscapeUtils.escapeJava(request.getParameter("username"));
+			 password = StringEscapeUtils.escapeJava(request.getParameter("password"));
+			if (username.isEmpty() || password.isEmpty() || username == null || password == null) {
+				throw new NullPointerException();
+			}
+		}catch(NullPointerException e) {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Credentials must be not null");
 			return;

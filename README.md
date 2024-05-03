@@ -6,7 +6,7 @@ La versione con JavaScript è presente nella directory ``TIW-2022-RIA``.
 ## Descrizione
 
 La traccia del progetto è presente nel file "TIW-progetti-2021-22-v2_traccia-2.pdf".
-L'interfaccia del progetto è in italiano, la documentazione in inglese.
+La documentazione con tutta la progettazione del database, del modello, delle interazioni e i rispettivi diagrammi è presente nel file "progetto-TIW-traccia2.pdf".
 
 ## Esecuzione
 
