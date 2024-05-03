@@ -38,13 +38,49 @@ public class UserDAO {
 				if (isAdmin == false && isClient == true)
 					result.setRole(false);
 				if ((isAdmin == true && isClient == true) || (isAdmin == false && isClient == false))
-					throw new SQLException("Errore nel database");
+					throw new SQLException();//db implementation error
 			}
 			return result;
 
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-			throw new SQLException("Errore nella richiesta");
+			throw new SQLException(e.getMessage());
+		} finally {
+			try {
+				if (resultSet != null) {
+					resultSet.close();
+				}
+			} catch (Exception e1) {
+				System.out.println(e1.getMessage());
+				throw new SQLException(e1);
+			}
+			try {
+				if (pStatement != null) {
+					pStatement.close();
+				}
+			} catch (Exception e2) {
+				System.out.println(e2.getMessage());
+				throw new SQLException(e2);
+			}
+		}
+	}
+	
+	public boolean checkUsername(String username) throws SQLException {
+		String query = "SELECT `username` FROM `user` WHERE `username` = ? AND `isClient` = true";
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setString(1, username);
+			resultSet = pStatement.executeQuery();
+
+			if (resultSet.next()) {
+				throw new SQLException("Username already present");
+			}
+			return false;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			throw new SQLException(e.getMessage());
 		} finally {
 			try {
 				if (resultSet != null) {
@@ -78,7 +114,7 @@ public class UserDAO {
 				pstatement.setString(2, password);
 				code = pstatement.executeUpdate();
 			} else
-				throw new SQLException("Inserire solo caratteri alfanumerici");
+				throw new SQLException();
 		} catch (SQLException e) {
 			// System.out.println(e.getMessage());
 			throw new SQLException(e.getMessage());

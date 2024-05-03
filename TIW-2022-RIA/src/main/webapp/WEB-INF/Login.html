@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="ISO-8859-1"/>
 	<title>Login</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css"/>
+	<link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css"/>
+	<script src="SCRIPTS/Login.js" charset="UTF-8" defer></script>
+	<script src="SCRIPTS/Utils.js" charset="UTF-8" defer></script>
 </head>
 <body>
 	<h1>Benvenuto</h1>
 	
 	<div id="login" class="form">
 	<h2>Accedi</h2>
-		<form action="Login" method="POST">
+		<form action="#">
 			Username: <input type="text" name="username" required><br>
 			Password: <input type="password" name="password" required><br><br>
-			<input type="submit" value="Accedi"><br>
-			<p id="notification">Messaggio di errore dal server</p>
+			<input id="loginButton" type="submit" value="Accedi"><br>
+			<p id="loginMessage" class="serverMessage"></p>
 		</form>
 	</div>
 	
 	<div id="register" class="form">
 	<h2>Registrati</h2>
-		<form action="Register" method="POST">
+		<form action="#">
 			Email: <input type="text" name="username" required><br>
 			Scegli una password: <input type="text" name="password" required><br>
 			Conferma la password: <input type="text" name="passwordConfirm" required><br>
-			<input type="submit" value="Registrati"><br>
-			<p id="notification">Messaggio di risposta dal server</p>
+			<input id="registerButton" type="submit" value="Registrati"><br>
+			<p id="registerMessage" class="serverMessage"></p>
 		</form>
 	</div>
 	

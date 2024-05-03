@@ -1,4 +1,29 @@
 @charset "UTF-8";
+.form {
+	position: relative;
+
+	border-style: solid;
+	border-width: 1px;
+
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
+
+	overflow: scroll;
+	margin-bottom: 5%;
+}
+.serverMessage{
+	color:red;
+}
+
+
+
+
+
+
+
+
+/*DA QUA È IL VECCHIO CSS
 table, th, td{
 	border: 1px solid black;
 	word-wrap: break-word;
@@ -15,25 +40,6 @@ h3{
 #image {
   width: 100px;
   height: 100px;
-}
-#notification{
-	color:red;
-}
-.form {
-	position: relative;
-	background-color: Azure; 
-
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 10px;
-
-	margin-bottom: 5%;
-
-	padding-left: 10px;
-	padding-right: 10px;
-	padding-bottom: 10px;
-
-	overflow: scroll;
 }
 .info{
 	position: relative;
@@ -127,4 +133,4 @@ h3{
   width: 90%;
   text-align: center;
   align-content: center;
-}
+}*/

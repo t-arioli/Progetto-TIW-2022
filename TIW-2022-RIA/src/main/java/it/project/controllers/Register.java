@@ -3,21 +3,14 @@ package it.project.controllers;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.InputMismatchException;
-
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import it.project.dao.UserDAO;
 import it.project.utils.ConnectionHandler;
-import it.project.utils.TemplateHandler;
-import it.project.utils.URLHandler;
 
 /**
  * Checks the request parameters, if they're correct inserts the new client in
@@ -27,7 +20,6 @@ import it.project.utils.URLHandler;
 public class Register extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	private TemplateEngine templateEngine;
 
 	public Register() {
 		super();
@@ -35,8 +27,6 @@ public class Register extends HttpServlet {
 
 	public void init() throws ServletException {
 		this.connection = ConnectionHandler.getConnection(getServletContext());
-		// Thymeleaf initialization
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
@@ -59,35 +49,42 @@ public class Register extends HttpServlet {
 		String password = null;
 		String passwordConfirm = null;
 		int code;
-		String answer = null;
-		String path = URLHandler.LOGIN;
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-
+		
+		username = request.getParameter("username");
+		password = request.getParameter("password");
+		passwordConfirm = request.getParameter("passwordConfirm");
+		if (username.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty() || username == null
+				|| password == null || passwordConfirm == null) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Credentials must be not null");
+			return;
+		}
+		
+		if (!password.equals(passwordConfirm)) {
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("Passwords does not match each other");
+			return;
+		}
+			
 		try {
-			username = request.getParameter("username");
-			password = request.getParameter("password");
-			passwordConfirm = request.getParameter("passwordConfirm");
-			if (username.isEmpty() || password.isEmpty() || passwordConfirm.isEmpty() || username == null
-					|| password == null || passwordConfirm == null)
-				throw new InputMismatchException("Parametri mancanti");
-			if (!password.equals(passwordConfirm))
-				throw new InputMismatchException("Le password non corrispondono");
 			UserDAO uDao = new UserDAO(this.connection);
-			if (uDao.checkCredentials(username, password) == null) {
+			if (!uDao.checkUsername(username)) {
 				code = uDao.register(username, password);
-				if (code != 0)
-					answer = "Registrazione avvenuta con successo!";
-				else
+				if (code != 0) {
+					response.setStatus(HttpServletResponse.SC_OK);
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().println("Success!");
+				}
+				else {
 					throw new SQLException();
+				}
+				
 			}
-
-		} catch (InputMismatchException | SQLException e) {
-			System.out.println(e.getMessage());
-			answer = "Errore durante la registrazione";
-		} finally {
-			ctx.setVariable("signupMessage", answer);
-			templateEngine.process(path, ctx, response.getWriter());
+		}catch(SQLException e) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error");
+			return;
 		}
 	}
 

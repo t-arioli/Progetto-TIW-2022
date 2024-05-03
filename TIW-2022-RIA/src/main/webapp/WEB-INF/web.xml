@@ -50,6 +50,6 @@ version="4.0">
  	</filter-mapping> 
  	<!--WELCOME FILE-->
 	<welcome-file-list>
-    	<welcome-file>Login</welcome-file>
+    	<welcome-file>/WEB-INF/Login.html</welcome-file>
     </welcome-file-list>
 </web-app>
