@@ -6,8 +6,7 @@
 		(e) => {
 			var form = e.target.closest("form");
 			if(form.checkValidity()){
-				makeCall(
-					"POST", 
+				makePostCall(
 					"Login", 
 					form,
 					function (res){
@@ -15,7 +14,8 @@
 							switch (res.status) {
 								case 200:
 									var user = JSON.parse(res.responseText);
-									sessionStorage.setItem('user', user);
+									sessionStorage.setItem('user', JSON.stringify(user));
+									//console.log(sessionStorage.getItem("user"));
 									if (user.isAdmin)
 										window.location.href = "EmployeeHome.html";
 									else
@@ -42,8 +42,7 @@
 		'click', 
 		(e) => {
 			if(e.target.closest("form").checkValidity()){
-				makeCall(
-					"POST", 
+				makePostCall(
 					"Register", 
 					e.target.closest("form"),
 					function (res){

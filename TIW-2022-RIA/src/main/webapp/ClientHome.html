@@ -3,33 +3,31 @@
 	<head>
 		<meta charset="ISO-8859-1">
 		<title>Home</title>
-		<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css"/>
+		<link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css"/>
+		<script src="SCRIPTS/Client.js" charset="UTF-8" defer></script>
+		<script src="SCRIPTS/Utils.js" charset="UTF-8" defer></script>
 	</head>
 <body>
 	<h1>Home</h1>
-	<p>Bentornato utente</p>
+	<div id="welcome">
+		<p>Bentornato <span id="username"></span></p>
+	</div>
 	
 	<div id="quotes">	
 		<h2>I tuoi preventivi</h2>
-		<div id="client-quotes-list" class="list">
+		<div class="list">
 			<h3>Lista preventivi</h3>
-				<table>
-					<thead>
-						<tr>
-							<th>DATA</th>
-							<th>PREZZO ASSEGNATO</th>
-							<th>DETTAGLI</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>1970-01-01</td>
-							<td>0.00</td>
-							<td><a href="GetQuoteDetails">Dettagli</a></td>
-						</tr>
-					</tbody>
-				</table>
-			<p id="notification">Non ci sono preventivi da mostrare</p>
+			<table id="quotesList_container">
+				<thead>
+					<tr>
+						<th>DATA</th>
+						<th>PREZZO ASSEGNATO</th>
+						<th>DETTAGLI</th>
+					</tr>
+				</thead>
+				<tbody id="quotesList_list"></tbody>
+			</table>
+			<p><span id="quotesList_alert" class="serverMessage"></span><p>
 		</div>
 
 		<div id="quote-details" class="info">
@@ -42,7 +40,7 @@
 					</tr>
 					<tr>
 						<td>IMMAGINE</td>
-						<td><img id="image" src="../IMAGES/default.jpg"></td>
+						<td><img class="image" src="IMAGES/default.jpg"></td>
 					</tr>
 					<tr>
 						<td>DATA CREAZIONE</td>
@@ -82,7 +80,7 @@
 					<tbody>
 						<tr>
 							<td>Prodotto</td>
-							<td><img id="image" src="../IMAGES/default.jpg"></td>
+							<td><img class="image" src="IMAGES/default.jpg"></td>
 							<td><a href="ChooseProduct" >Seleziona</a></td>
 						</tr>
 					</tbody>
@@ -102,7 +100,7 @@
 					<tr>
 						<td>IMMAGINE:</td>
 						<td>
-							<img id="image" src="../IMAGES/default.jpg">
+							<img class="image" src="IMAGES/default.jpg">
 						</td>
 					</tr>
 					<tr>

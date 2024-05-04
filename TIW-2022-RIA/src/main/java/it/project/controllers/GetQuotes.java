@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,11 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import com.google.gson.Gson;
+
 import it.project.utils.ConnectionHandler;
-import it.project.utils.TemplateHandler;
-import it.project.utils.URLHandler;
 import it.project.bean.Quote;
 import it.project.bean.User;
 import it.project.dao.QuoteDAO;
@@ -31,20 +28,17 @@ import it.project.dao.QuoteDAO;
  * 'userQuotes' while the unassigned quotes in the Employee session are saved in
  * the 'newQuotes' attribute.
  */
-@WebServlet("/Home")
-public class GetHomePage extends HttpServlet {
+@WebServlet("/GetQuotes")
+public class GetQuotes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 	private Connection connection = null;
 
-	public GetHomePage() {
+	public GetQuotes() {
 		super();
 	}
 
 	public void init() throws ServletException {
 		this.connection = ConnectionHandler.getConnection(getServletContext());
-		// thymeleaf init
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
@@ -54,9 +48,6 @@ public class GetHomePage extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		String path = "";
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		// get own preventives
 		User user = (User) session.getAttribute("user");
 		List<Quote> userQuotes = null;
@@ -65,22 +56,25 @@ public class GetHomePage extends HttpServlet {
 			userQuotes = new ArrayList<>();
 			userQuotes = qDao.getQuotesByUser(user);
 			session.setAttribute("userQuotes", userQuotes);
-			// get html page
-			if (user.isAdmin()) {
+
+			/*if (user.isAdmin()) {
 				// get new quotes
 				List<Quote> newQuotes = new ArrayList<>();
 				newQuotes = qDao.getUnassignedQuotes(user);
 				session.setAttribute("newQuotes", newQuotes);
-			}
+			}*/
+			String json = new Gson().toJson(userQuotes);
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(json);
+			System.out.println(json);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
-		} finally {
-			if (user.isAdmin())
-				path = URLHandler.EMPLOYEE_HOME;
-			else
-				path = URLHandler.CLIENT_HOME;
-			templateEngine.process(path, ctx, response.getWriter());
-		}
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error");
+			return;
+		} 
 	}
 
 	/**

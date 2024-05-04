@@ -15,7 +15,29 @@
 .serverMessage{
 	color:red;
 }
+.image {
+  width: 100px;
+  height: 100px;
+}
+.list{
+	position: relative;
+	
+	border-style: solid;
+	border-width: 1px;
+	
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 10px;
 
+	margin-bottom: 5%;
+	overflow: scroll;
+}
+th, td{
+	border: 1px solid black;
+	word-wrap: break-word;
+	text-align: center;
+	overflow: hidden;
+}
 
 
 
