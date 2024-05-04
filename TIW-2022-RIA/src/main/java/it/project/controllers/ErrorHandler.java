@@ -1,15 +1,14 @@
 package it.project.controllers;
 
 import java.io.IOException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import it.project.utils.TemplateHandler;
+import javax.servlet.http.HttpSession;
+
+import it.project.bean.User;
 import it.project.utils.URLHandler;
 
 /**
@@ -19,14 +18,12 @@ import it.project.utils.URLHandler;
 @WebServlet("/ErrorHandler")
 public class ErrorHandler extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 
 	public ErrorHandler() {
 		super();
 	}
 
 	public void init() throws ServletException {
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
@@ -36,10 +33,22 @@ public class ErrorHandler extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String path = URLHandler.ERROR_PAGE;
-		ServletContext servletContext = getServletContext();
-		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-		templateEngine.process(path, ctx, response.getWriter());
+		String path = "";
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("user");
+		
+		if(session != null && user != null) {
+			if(user.isAdmin())
+				path = URLHandler.EMPLOYEE_HOME;
+			else
+				path = URLHandler.CLIENT_HOME;
+		}
+		else {
+			path = URLHandler.LOGIN;
+		}
+		
+		response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+		response.sendRedirect(path);
 	}
 
 	/**

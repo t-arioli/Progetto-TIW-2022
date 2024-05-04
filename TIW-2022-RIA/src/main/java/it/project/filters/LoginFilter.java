@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import it.project.utils.URLHandler;
+
 @WebFilter("/LoginFilter")
 public class LoginFilter implements Filter {
 
@@ -26,7 +28,7 @@ public class LoginFilter implements Filter {
 			throws IOException, ServletException {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
-		String pathNoLogin = req.getServletContext().getContextPath() + "/Login";
+		String pathNoLogin = req.getServletContext().getContextPath() + URLHandler.LOGIN;
 
 		HttpSession session = req.getSession(false);
 		if (session == null || session.getAttribute("user") == null) {
