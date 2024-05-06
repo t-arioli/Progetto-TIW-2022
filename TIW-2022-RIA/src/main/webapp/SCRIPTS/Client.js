@@ -32,7 +32,6 @@
 		this.list = _list;
 		var self = this;
 		
-		//this.show = function(next){
 		this.show = function(){
 			makeGetCall(
 				"GetQuotes",
@@ -40,17 +39,13 @@
 					if(req.readyState == XMLHttpRequest.DONE) {	
 						if(req.status == 200){
 							var quotes = JSON.parse(req.responseText);
-							//console.log(quotes);
 							self.update(quotes);
-							//console.log(quotes);
 							if(quotes.length == 0){
 								console.log(self.textAlert);
+								self.container.style.visibility = "hidden";	
 								self.textAlert.textContent = "No quotes";
 								return;
 							}
-							/*if(next){
-								next();
-							}*/
 						}else{
 							console.log(req.status);
 							self.textAlert.textContent = req.responseText;
@@ -58,10 +53,6 @@
 					}
 				}
 			);
-		};
-		
-		this.reset = function(){
-			
 		};
 		
 		this.update = function(quotes){
@@ -94,14 +85,60 @@
 				row.appendChild(cell_link);
 				self.list.appendChild(row);
 			});
-			this.container.visibility = "visible";	
+			this.container.style.visibility = "visible";	
 		};	
 	}
 	
-/*	function QuotesDetails(){
+	function QuoteDetails(_textAlert, _container, _quote){
+		this.textAlert = _textAlert;
+		this.quote = _quote;
+		this.container = _container;
+		
+		this.show = function(prevId){
+			var self = this;
+			makeGetCall(
+				"GetQuoteDetails?prevId=" + prevId,
+				function(req){
+					if(req.readyState == XMLHttpRequest.DONE){
+						if(req.status == 200){
+							var details = JSON.parse(req.responseText);
+							self.update(details);
+						}
+					}
+				}
+			)
+		};
+		this.update = function(_quote){
+			this.quote.product.textContent = _quote.product.name;
+			if(_quote.product.imageUrl == null){
+				this.quote.image.src = "IMAGES/default.jpg";
+			}else{
+				this.quote.image.src = "IMAGES/"+_quote.product.imageUrl;
+			}
+			this.quote.dateCreation.textContent = _quote.dateCreation;
+			this.quote.dateValidation.textContent = _quote.dateValidation;
+			this.quote.price.textContent = _quote.price;
+			
+			var ul, li;
+			ul = document.createElement("ul");
+			_quote.options.forEach(function(e){
+				var type = "";
+				e.onSale ? type = " (On sale)" : type = " (Standard)";
+				li = document.createElement("li");
+				li.textContent = e.name + type;
+				ul.appendChild(li);
+			});
+			this.quote.options.removeChild(this.quote.options.lastChild);
+			this.quote.options.appendChild(ul);
+
+			this.container.style.visibility = "visible";
+		};
+		this.reset = function(){
+			this.container.style.visibility = "hidden";
+		};
 		
 	}
-	
+/*	
 	function ProductsList(){
 		
 	}
@@ -112,22 +149,35 @@
 */	
 	//like a main()
   	function PageOrchestrator(){
-		  
-		this.start = function(){
-			//PERSONAL MESSAGE
-			personalMessage = new PersonalMessage(
-				user.username,
-	        	document.getElementById("username"));
-	      	personalMessage.show();
-	      	//QUOTES LIST
-	      	quotesList = new QuotesList(
+		  this.start = function(){
+			  //PERSONAL MESSAGE
+			  personalMessage = new PersonalMessage(
+				  user.username,
+				  document.getElementById("username"));
+			  personalMessage.show();
+			  //QUOTES LIST
+			  quotesList = new QuotesList(
 				  document.getElementById("quotesList_alert"),
 				  document.getElementById("quotesList_container"),
 				  document.getElementById("quotesList_list")
 			  );
+			  //QUOTES DETAILS
+			  quoteDetails = new QuoteDetails(
+				  null,
+				  document.getElementById("quote-details"),
+				  {
+					  product: document.getElementById("quoteDetails_product"),
+					  image: document.getElementById("quoteDetails_img"),
+					  dateCreation: document.getElementById("quoteDetails_dateCreation"),
+					  dateValidation: document.getElementById("quoteDetails_dateValidation"),
+					  price: document.getElementById("quoteDetails_price"),
+					  options: document.getElementById("quoteDetails_options")
+				  }
+			  );
 		};
 		this.refresh = function(){
 			quotesList.show();
+			quoteDetails.reset();
 		}; 
 	}
 	
