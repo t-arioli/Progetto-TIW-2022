@@ -67,9 +67,8 @@
 		<h2>Crea nuovo preventivo</h2>
 		<div id="products-list" class="list">
 			<h3>Lista prodotti</h3>
-			<a href="GetProductsList">Carica lista prodotti</a> 
-			<div class="list-table">
-				<table>
+			<a id="productsList_call"></a> 
+				<table id="productsList_container">
 					<thead>
 						<tr>
 							<th>NOME</th>
@@ -77,16 +76,9 @@
 							<th>SELEZIONA</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>Prodotto</td>
-							<td><img class="image" src="IMAGES/default.jpg"></td>
-							<td><a href="ChooseProduct" >Seleziona</a></td>
-						</tr>
-					</tbody>
+					<tbody id="productsList_list"></tbody>
 				</table>
-				<p id="notification">Non ci sono prodotti disponibili. Riprova più tardi</p>
-			</div>
+				<p id="productsList_alert" class="serverMessage"></p>
 		</div>
 
 		<div id="create-quote" class="info">

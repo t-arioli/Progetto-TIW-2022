@@ -2,6 +2,7 @@
 	var personalMessage;
 	var quotesList;
 	var quoteDetails;
+	var productsList;
 	var pageOrchestrator = new PageOrchestrator();
 	var user = JSON.parse(sessionStorage.getItem("user"));
 	
@@ -136,13 +137,97 @@
 		this.reset = function(){
 			this.container.style.visibility = "hidden";
 		};
+	}
+	
+	function ProductsList(_textAlert, _container, _list){
+		this.textAlert = _textAlert;
+		this.container = _container;
+		this.list = _list;
+		var self = this;
+		
+		this.start = function(anchor){
+			anchor.href = "#";
+			var p = document.createTextNode("Load Products");
+			anchor.appendChild(p);
+			
+			anchor.addEventListener(
+				"click",
+				() => {
+					self.load();
+					//console.log("this works");
+				},
+				false);
+			this.container.style.visibility = "hidden";	
+		};
+		
+		this.load = function(){
+			self.reset();
+			makeGetCall(
+				"GetProductsList",
+				function(req){
+					if(req.readyState == XMLHttpRequest.DONE){
+						if(req.status == 200){
+							var products = JSON.parse(req.responseText);
+							self.update(products);
+							if(quotes.length == 0){
+								console.log(self.textAlert);
+								self.container.style.visibility = "hidden";	
+								self.textAlert.textContent = "No products, try later";
+								return;
+							}
+						}else{
+							self.textAlert.textContent = req.responseText;
+						}
+					}
+				})
+		};
+
+		this.update = function(products){
+			var row, cell_name, cell_img, cell_link, a, p, img;
+			
+			products.forEach(function(prod){
+				row = document.createElement("tr");
+				
+				cell_name = document.createElement("td");
+				cell_name.textContent = prod.name;
+				row.appendChild(cell_name);
+				
+				cell_img = document.createElement("td");
+				img = document.createElement("img");
+				img.src = prod.imageUrl;
+				cell_img.appendChild(img);
+				row.appendChild(cell_img);
+				
+				cell_link = document.createElement("td");
+				a = document.createElement("a");
+				cell_link.appendChild(a);
+				p = document.createTextNode("Choose");
+				a.appendChild(p);
+				a.setAttribute("prodId", prod.id);
+				a.addEventListener(
+					"click",
+					() => {
+						//wizard for create quote
+						//ChoseProduct(prodId)
+				},
+				false);
+				a.href = "#";
+				row.appendChild(cell_link);
+				self.list.appendChild(row);
+			});
+			this.container.style.visibility = "visible";	
+		};
+		
+		this.reset = function (){
+			while(this.list.firstChild){
+				this.list.removeChild(this.list.lastChild);
+			}
+			this.container.style.visibility = "hidden";	
+		};
+		
 		
 	}
 /*	
-	function ProductsList(){
-		
-	}
-	
 	function CreateQuote(){
 		
 	}
@@ -174,10 +259,20 @@
 					  options: document.getElementById("quoteDetails_options")
 				  }
 			  );
+			  //PRODUCTS LIST
+			  productsList = new ProductsList(
+				  //document.getElementById("productsList_call"),
+				  document.getElementById("productsList_alert"),
+				  document.getElementById("productsList_container"),
+				  document.getElementById("productsList_list")
+			  );
+			  productsList.start(document.getElementById("productsList_call"));
+			  //WIZARD
 		};
 		this.refresh = function(){
 			quotesList.show();
 			quoteDetails.reset();
+			productsList.reset();
 		}; 
 	}
 	
