@@ -1,4 +1,5 @@
 {
+	//declaration of various VIEW elements and session elements
 	var personalMessage;
 	var quotesList;
 	var quoteDetails;
@@ -6,7 +7,7 @@
 	var createQuote;
 	var pageOrchestrator = new PageOrchestrator();
 	var user = JSON.parse(sessionStorage.getItem("user"));
-	
+	//window event manager
 	window.addEventListener(
 		"load", 
 		() => {
@@ -14,27 +15,27 @@
 	      		window.location.href = "Login.html";
 	    	} else {
 	      		pageOrchestrator.start(); // initialize the components
-	      		pageOrchestrator.refresh();
+	      		pageOrchestrator.refresh(); //refresh
 	    	} // display initial content
 	  	}, 
 	  	false);
 	
 	//VIEW COMPONENTS
-	
+	//display personal welcome message
 	function PersonalMessage(username, messagecontainer) {
 		this.username = username;
 	    this.show = function() {
 	      messagecontainer.textContent = this.username;
 	    }
 	}
-	
+	//display all the quotes <div id="quotes"><div class="list">
 	function QuotesList(_textAlert, _container, _list){
-		this.textAlert = _textAlert;
-		this.container = _container;
-		this.list = _list;
+		this.textAlert = _textAlert; //message with infos <p><span id="quotesList_alert" class="serverMessage"></span><p>
+		this.container = _container;//<table id="quotesList_container">
+		this.list = _list;//<tbody id="quotesList_list"></tbody>
 		var self = this;
 		
-		this.show = function(){
+		this.show = function(){ //gets the quotes from server call
 			makeGetCall(
 				"GetQuotes",
 				function(req) {
@@ -42,7 +43,7 @@
 						if(req.status == 200){
 							var quotes = JSON.parse(req.responseText);
 							//console.log(quotes);
-							self.update(quotes);
+							self.update(quotes); //update from there, only entry point for that method
 							if(quotes.length == 0){
 								console.log(self.textAlert);
 								self.container.style.visibility = "hidden";	
@@ -58,14 +59,14 @@
 			);
 		};
 		
-		this.update = function(quotes){
+		this.update = function(quotes){//build the table <tbody id="quotesList_list"></tbody>
 			var row, cell_date, cell_price, cell_link, a, p;
 			
-			while(this.list.firstChild){
+			while(this.list.firstChild){ //remove outdated list
 				this.list.removeChild(this.list.lastChild);
 			}
 			
-			quotes.forEach(function(quote){
+			quotes.forEach(function(quote){//creates one row for each quote in the list received by the server
 				row = document.createElement("tr");
 				
 				cell_date = document.createElement("td");
@@ -84,24 +85,22 @@
 				a.setAttribute("prevId", quote.id);
 				a.addEventListener(
 					"click",
-					(e) => {
-						quoteDetails.show(quote);
+					() => {
+						quoteDetails.show(quote); //only entry point 
 					},
 					false);
 				a.href = "#";
 				row.appendChild(cell_link);
-				self.list.appendChild(row);
+				self.list.appendChild(row); //append each table row <tr> as this.list child
 			});
 			this.container.style.visibility = "visible";	
 		};	
 	}
-	
-	function QuoteDetails(_textAlert, _container, _quote){
-		this.textAlert = _textAlert;
-		this.quoteHTML = _quote;
+	//display all the quotes info 
+	function QuoteDetails(_container, _quote){
+		this.quoteHTML = _quote; //the elements in the HTML that display the infos
 		this.container = _container;
-		this.quoteBean;
-		//var self = this;
+		this.quoteBean;// the object quote 
 		
 		this.show = function(quote){
 			this.quoteBean = quote;
@@ -136,23 +135,22 @@
 			this.container.style.visibility = "hidden";
 		};
 	}
-	
+	//list of all products from server
 	function ProductsList(_textAlert, _container, _list){
 		this.textAlert = _textAlert;
-		this.container = _container;
+		this.container = _container; //<table id="productsList_container">
 		this.list = _list;
 		var self = this;
 		
 		this.start = function(anchor){
 			anchor.href = "#";
-			var p = document.createTextNode("Load Products");
+			var p = document.createTextNode("Refresh products");
 			anchor.appendChild(p);
 			
 			anchor.addEventListener(
 				"click",
 				() => {
 					self.load();
-					//console.log("this works");
 				},
 				false);
 			this.container.style.visibility = "hidden";	
@@ -316,7 +314,7 @@
 									self.reset();
 									quotesList.show();
 								}else{
-									console.log(res.status);
+									console.log(res.responseText);
 								}
 							}
 						);
@@ -364,7 +362,6 @@
 			  );
 			  //QUOTES DETAILS
 			  quoteDetails = new QuoteDetails(
-				  null,
 				  document.getElementById("quote-details"),
 				  {
 					  product: document.getElementById("quoteDetails_product"),
@@ -377,7 +374,6 @@
 			  );
 			  //PRODUCTS LIST
 			  productsList = new ProductsList(
-				  //document.getElementById("productsList_call"),
 				  document.getElementById("productsList_alert"),
 				  document.getElementById("productsList_container"),
 				  document.getElementById("productsList_list")
@@ -394,11 +390,19 @@
 					  button: document.getElementById("createQuoteButton")
 				  }
 			  );
+			  //LOGOUT
+			  document.getElementById("logout_href").addEventListener(
+				  "click", 
+				  () => {
+					  window.sessionStorage.removeItem("user");
+					}
+					
+				);
 		};
 		this.refresh = function(){
 			quotesList.show();
 			quoteDetails.reset();
-			productsList.reset();
+			productsList.load();
 			createQuote.reset();
 		}; 
 	}
