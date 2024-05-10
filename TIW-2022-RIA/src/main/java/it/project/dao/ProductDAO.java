@@ -29,7 +29,10 @@ public class ProductDAO {
 				p.setCode(resultSet.getInt("code"));
 				p.setName(resultSet.getString("name"));
 				p.setImageUrl(resultSet.getString("imageUrl"));
+				OptionDAO oDao = new OptionDAO(this.connection);
+				p.setAvailableOptions(oDao.getOptionsByProduct(p.getCode()));
 				result.add(p);
+				//System.out.println(p.toString());
 			}
 
 		} catch (SQLException e) {
@@ -71,6 +74,8 @@ public class ProductDAO {
 					result.setCode(resultSet.getInt("code"));
 					result.setName(resultSet.getString("name"));
 					result.setImageUrl(resultSet.getString("imageUrl"));
+					OptionDAO oDao = new OptionDAO(this.connection);
+					result.setAvailableOptions(oDao.getOptionsByProduct(result.getCode()));
 				}
 			}
 

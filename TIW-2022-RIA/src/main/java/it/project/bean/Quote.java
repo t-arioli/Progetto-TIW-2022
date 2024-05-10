@@ -91,7 +91,10 @@ public class Quote {
 	@Override
 	public String toString() {
 		String result = "";
-		result.concat((this.id).toString() + " ");
+		if(this.id == null)
+			result.concat("Id not assigned yet");
+		else
+			result.concat((this.id).toString() + " ");
 		result.concat(this.product.getName() + " ");
 		if (this.price != null)
 			result.concat(this.price + " ");

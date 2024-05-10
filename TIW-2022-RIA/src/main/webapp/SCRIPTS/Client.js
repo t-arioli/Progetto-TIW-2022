@@ -3,6 +3,7 @@
 	var quotesList;
 	var quoteDetails;
 	var productsList;
+	var createQuote;
 	var pageOrchestrator = new PageOrchestrator();
 	var user = JSON.parse(sessionStorage.getItem("user"));
 	
@@ -40,6 +41,7 @@
 					if(req.readyState == XMLHttpRequest.DONE) {	
 						if(req.status == 200){
 							var quotes = JSON.parse(req.responseText);
+							console.log(quotes);
 							self.update(quotes);
 							if(quotes.length == 0){
 								console.log(self.textAlert);
@@ -79,7 +81,7 @@
 				a.addEventListener(
 					"click",
 					(e) => {
-						quoteDetails.show(e.target.getAttribute("prevId"));
+						quoteDetails.show(quote);
 					},
 					false);
 				a.href = "#";
@@ -92,45 +94,37 @@
 	
 	function QuoteDetails(_textAlert, _container, _quote){
 		this.textAlert = _textAlert;
-		this.quote = _quote;
+		this.quoteHTML = _quote;
 		this.container = _container;
+		this.quoteBean;
+		//var self = this;
 		
-		this.show = function(prevId){
-			var self = this;
-			makeGetCall(
-				"GetQuoteDetails?prevId=" + prevId,
-				function(req){
-					if(req.readyState == XMLHttpRequest.DONE){
-						if(req.status == 200){
-							var details = JSON.parse(req.responseText);
-							self.update(details);
-						}
-					}
-				}
-			)
+		this.show = function(quote){
+			this.quoteBean = quote;
+			this.update();
 		};
-		this.update = function(_quote){
-			this.quote.product.textContent = _quote.product.name;
-			if(_quote.product.imageUrl == null){
-				this.quote.image.src = "IMAGES/default.jpg";
+		this.update = function(){
+			this.quoteHTML.product.textContent = this.quoteBean.product.name;
+			if(this.quoteBean.product.imageUrl == null){
+				this.quoteHTML.image.src = "IMAGES/default.jpg";
 			}else{
-				this.quote.image.src = "IMAGES/"+_quote.product.imageUrl;
+				this.quoteHTML.image.src = "IMAGES/"+this.quoteBean.product.imageUrl;
 			}
-			this.quote.dateCreation.textContent = _quote.dateCreation;
-			this.quote.dateValidation.textContent = _quote.dateValidation;
-			this.quote.price.textContent = _quote.price;
+			this.quoteHTML.dateCreation.textContent = this.quoteBean.dateCreation;
+			this.quoteHTML.dateValidation.textContent = this.quoteBean.dateValidation;
+			this.quoteHTML.price.textContent = this.quoteBean.price;
 			
 			var ul, li;
 			ul = document.createElement("ul");
-			_quote.options.forEach(function(e){
+			this.quoteBean.options.forEach(function(e){
 				var type = "";
 				e.onSale ? type = " (On sale)" : type = " (Standard)";
 				li = document.createElement("li");
 				li.textContent = e.name + type;
 				ul.appendChild(li);
 			});
-			this.quote.options.removeChild(this.quote.options.lastChild);
-			this.quote.options.appendChild(ul);
+			this.quoteHTML.options.removeChild(this.quoteHTML.options.lastChild);//remove outdated list
+			this.quoteHTML.options.appendChild(ul);
 
 			this.container.style.visibility = "visible";
 		};
@@ -203,14 +197,13 @@
 				cell_link.appendChild(a);
 				p = document.createTextNode("Choose");
 				a.appendChild(p);
-				a.setAttribute("prodId", prod.id);
+				//a.setAttribute("prodId", prod.code);
 				a.addEventListener(
 					"click",
 					() => {
-						//wizard for create quote
-						//ChoseProduct(prodId)
-				},
-				false);
+						createQuote.show(prod);
+					},
+					false);
 				a.href = "#";
 				row.appendChild(cell_link);
 				self.list.appendChild(row);
@@ -227,11 +220,149 @@
 		
 		
 	}
-/*	
-	function CreateQuote(){
+	
+	function CreateQuote(_container, _quote){
+		this.container = _container;
+		this.quoteHTML = _quote; //the quote render on DOM
+		var self = this;
+		this.product;
+		this.availableOptions;
+		this.chosenOptions = new Array();
 		
+		
+		this.show = function(_product){
+			self.product = _product;
+			self.update();
+			self.showOptions();
+		};
+		
+		this.update = function(){
+			this.quoteHTML.product.textContent = this.product.name;
+			if(this.product.imageUrl == null){
+				this.quoteHTML.image.src = "IMAGES/default.jpg";
+			}else{
+				this.quoteHTML.image.src = "IMAGES/"+this.product.imageUrl;
+			}
+			
+			var ul, li;
+			ul = document.createElement("ul");
+			if(!this.chosenOptions.empty){
+				this.chosenOptions.forEach(function(e){
+					var type = "";
+					e.onSale ? type = " (On sale)" : type = " (Standard)";
+					li = document.createElement("li");
+					li.textContent = e.name + type;
+					ul.appendChild(li);
+				});
+			}
+			this.quoteHTML.options.removeChild(this.quoteHTML.options.lastChild); //remove old outdated list
+			this.quoteHTML.options.appendChild(ul);
+			this.container.style.visibility = "visible";
+		}
+		
+		this.showOptions = function() {	
+			this.product.availableOptions.forEach(function(e){
+				var type = "";
+				var li, a;
+				e.onSale ? type = " (On sale)" : type = " (Standard)";
+				li = document.createElement("li");
+				a = document.createElement("a");
+				li.appendChild(a);
+				a.textContent = e.name + type;
+				a.setAttribute("id", e.code)
+				a.addEventListener(
+					"click",
+					(e) => {
+						self.addOption(self.product.availableOptions.find((x) => x.code == e.target.id));
+					},
+					false
+				);
+				a.href = "#";
+				self.quoteHTML.availableOptions.appendChild(li);
+			});
+			
+			this.quoteHTML.button.addEventListener(
+				"click",
+				() => {
+					if(self.product != null && self.chosenOptions.length != 0){
+						/*
+						var data = new Array();
+						data.push(self.product.code);
+						self.chosenOptions.forEach((e) => data.push(e.code));
+						console.log(data);
+						makeJSONPostCall(
+							"CreateQuote",
+							data, 
+							function(res){
+								if(res.status == 200){
+									self.reset();
+									quotesList.show();
+								}else{
+									console.log(res.status);
+								}
+							}
+						)*/
+						var form, prod, opt;
+						//<form action = '#'>
+						form = document.createElement("form");
+						form.action = "#";
+						//<input type="number" name="prodId">
+						prod = document.createElement("input");
+						prod.type = "text";
+						prod.name = "prodId";
+						prod.value = self.product.code;
+						form.appendChild(prod);
+						//<input type="number" name="opt">
+						self.chosenOptions.forEach((o) => {
+							opt = document.createElement("input");
+							opt.type="text";
+							opt.name="optId";
+							opt.value = o.code;
+							form.appendChild(opt);
+						});
+						console.log(form);
+						makePostCall(
+							"CreateQuote",
+							form, 
+							function(res){
+								if(res.status == 200){
+									self.reset();
+									quotesList.show();
+								}else{
+									console.log(res.status);
+								}
+							}
+						);
+					}
+				}
+			);
+
+			
+		};
+		
+		this.addOption = function(option) {
+			//very old school code
+			var found = false;
+			for(let i = 0; i < this.chosenOptions.length; i++){
+				if(this.chosenOptions[i].code == option.code){
+					found = true;
+					break;
+				}
+			}
+			if(!found){
+				this.chosenOptions.push(option);
+				self.update();
+			}
+		};
+		
+		this.reset = function(){
+			this.container.style.visibility = "hidden";
+			this.product = null;
+			this.availableOptions = null;
+			this.chosenOptions = [];
+		};
 	}
-*/	
+
 	//like a main()
   	function PageOrchestrator(){
 		  this.start = function(){
@@ -268,12 +399,22 @@
 			  );
 			  productsList.start(document.getElementById("productsList_call"));
 			  //WIZARD
+			  createQuote = new CreateQuote(
+				  document.getElementById("create-quote"),
+				  {
+					  product: document.getElementById("createQuote_product"),
+					  image: document.getElementById("createQuote_img"),
+					  options: document.getElementById("createQuote_options"),
+					  availableOptions: document.getElementById("createQuote_availableOptions"),
+					  button: document.getElementById("createQuoteButton")
+				  }
+			  );
 		};
 		this.refresh = function(){
 			quotesList.show();
 			quoteDetails.reset();
 			productsList.reset();
+			createQuote.reset();
 		}; 
 	}
-	
 }

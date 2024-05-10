@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,15 +12,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import com.google.gson.Gson;
 
 import it.project.bean.Option;
 import it.project.bean.Product;
 import it.project.dao.OptionDAO;
 import it.project.utils.ConnectionHandler;
-import it.project.utils.TemplateHandler;
-import it.project.utils.URLHandler;
 
 /**
  * Gets a product from the 'productsList' stored in the session and encapsulates
@@ -29,8 +25,7 @@ import it.project.utils.URLHandler;
  */
 @WebServlet("/ChooseProduct/*")
 public class ChooseProduct extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
+/*	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 
 	public ChooseProduct() {
@@ -41,8 +36,6 @@ public class ChooseProduct extends HttpServlet {
 	public void init() throws ServletException {
 		// db connection
 		this.connection = ConnectionHandler.getConnection(getServletContext());
-		// thymeleaf init
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
@@ -51,7 +44,7 @@ public class ChooseProduct extends HttpServlet {
 	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
-	 */
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -61,7 +54,6 @@ public class ChooseProduct extends HttpServlet {
 		HttpSession session = request.getSession();
 		ArrayList<Product> pList = null;
 		try {
-			// Integer.parseInt(request.getParameter("productId"), productId);
 			productId = Integer.parseInt(request.getParameter("productId"));
 			pList = (ArrayList<Product>) session.getAttribute("productsList");
 			for (Product p : pList)
@@ -71,33 +63,39 @@ public class ChooseProduct extends HttpServlet {
 				}
 			if (product == null)
 				throw new SQLException("Nessun prodotto nel db");
-			OptionDAO oDao = new OptionDAO(this.connection);
-			options = oDao.getOptionsByProduct(product.getCode());
+			
+			//OptionDAO oDao = new OptionDAO(this.connection);
+			//options = oDao.getOptionsByProduct(product.getCode());
 			session.setAttribute("product", product);
 			session.setAttribute("availableOptions", options);
-			session.setAttribute("chosenOptions", null);
-		} catch (NumberFormatException e) {
+			//session.setAttribute("chosenOptions", null);
+			//System.out.println(product + " " + options);
+			ArrayList<Object> resContent = new ArrayList<Object>();
+			resContent.add(product);
+			resContent.add(options);
+			String json = new Gson().toJson(resContent);
+			System.out.println(json);
+			response.setStatus(HttpServletResponse.SC_OK);
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			response.getWriter().write(json);
+			
+		} catch (NumberFormatException | SQLException e) {
 			// case bad request
 			System.out.println(e.getMessage());
 			session.removeAttribute("product");
 			session.removeAttribute("availableOptions");
 			session.removeAttribute("chosenOptions");
-		} catch (SQLException e) {
-			// caso error from db
-			System.out.println(e.getMessage());
-		} finally {
-			// response
-			String path = URLHandler.CLIENT_HOME;
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			response.getWriter().println("Internal server error");
+			return;
 		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
-	 */
+
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -110,5 +108,5 @@ public class ChooseProduct extends HttpServlet {
 		} catch (SQLException e) {
 			// e.printStackTrace();
 		}
-	}
+	}*/
 }

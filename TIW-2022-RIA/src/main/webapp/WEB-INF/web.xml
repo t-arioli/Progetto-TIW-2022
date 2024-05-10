@@ -47,6 +47,7 @@ version="4.0">
  	<filter-mapping> 
     	<filter-name>NoCacheFilter</filter-name> 
     	<url-pattern>/Login</url-pattern>
+    	<url-pattern>/Register</url-pattern>
  	</filter-mapping> 
  	<!--WELCOME FILE-->
 	<welcome-file-list>

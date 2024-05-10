@@ -86,29 +86,25 @@
 			<table>
 				<tbody>
 					<tr>
-						<td>PRODOTTO SCELTO:</td>
-						<td>Prodotto</td>
+						<td>PRODOTTO SCELTO</td>
+						<td id=createQuote_product></td>
 					</tr>
 					<tr>
-						<td>IMMAGINE:</td>
-						<td>
-							<img class="image" src="IMAGES/default.jpg">
-						</td>
+						<td>IMMAGINE</td>
+						<td><img id="createQuote_img" class="image"></td>
 					</tr>
 					<tr>
-						<td>OPZIONI SCELTE:</td>
-						<td><ul>
-							<li>Opzione</li></ul></td>
+						<td>OPZIONI SCELTE</td>
+						<td id="createQuote_options"><ul><li id="createQuote_option"></li></ul></td>
 					</tr>
 				</tbody>
 			</table>
 			<br>
 			Scegli una o diverse opzioni per il prodotto tra le seguenti:
-			<ul><li><a href="AddOption">
-			Opzione</a></li></ul>
+			<ul id="createQuote_availableOptions"></ul>
 
-			<form action="CreateQuote" method="POST">
-				<input type="submit" value="Invia Preventivo">
+			<form action="#">
+				<input id="createQuoteButton" type="submit" value="Invia Preventivo">
 			</form>
 		</div>
 	</div>

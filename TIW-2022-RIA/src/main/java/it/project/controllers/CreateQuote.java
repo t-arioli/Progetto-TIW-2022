@@ -5,33 +5,32 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
+import com.google.gson.Gson;
+
 import it.project.bean.Option;
 import it.project.bean.Product;
 import it.project.bean.Quote;
 import it.project.bean.User;
+import it.project.dao.ProductDAO;
 import it.project.dao.QuoteDAO;
 import it.project.utils.ConnectionHandler;
-import it.project.utils.TemplateHandler;
-import it.project.utils.URLHandler;
 
 /**
  * Gets all the details from the session, encapsulates them in a new Quote and
  * inserts in the DB
  */
 @WebServlet("/CreateQuote")
+@MultipartConfig
 public class CreateQuote extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private TemplateEngine templateEngine;
 	private Connection connection = null;
 
 	public CreateQuote() {
@@ -40,47 +39,77 @@ public class CreateQuote extends HttpServlet {
 
 	public void init() throws ServletException {
 		this.connection = ConnectionHandler.getConnection(getServletContext());
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("user");
-		Product product = (Product) session.getAttribute("product");
-		ArrayList<Option> options = (ArrayList<Option>) session.getAttribute("chosenOptions");
-		String path = "";
+		//Product product = (Product) session.getAttribute("product");
+		//ArrayList<Option> options = (ArrayList<Option>) session.getAttribute("chosenOptions");
+		//String path = "";
+		Product product = null;
+		ArrayList<Option> options = null;
+		System.out.println("Servlet CHIAMATA");
 		try {
-			if (user != null && !user.isAdmin() && product != null && options != null && !options.isEmpty()) {
+			if (user != null && !user.isAdmin()) {
+				ProductDAO pDao = new ProductDAO(this.connection);
+				//System.out.println(request.getParameter("prodId"));
+				int productCode = Integer.parseInt(request.getParameter("prodId"));
+				//tocheck
+				String[] optsParams = request.getParameterValues("optId");
+				System.out.println(productCode);
+				
+				product = pDao.getProductById(productCode);
+				options = new ArrayList<Option>();
+				System.out.println("Servlet CreateQuote: "+product.toString());
+				if(optsParams.length == 0 || product == null)
+					throw new Exception("parameters problem");
+				
+				for(String s: optsParams) {
+					int optionCode = Integer.parseInt(s);
+					System.out.println("Option n: "+optionCode);
+					ArrayList<Option> availableOptions = product.getAvailableOptions();
+					for(Option o: availableOptions) {
+						if(o.getCode() == optionCode) {
+							options.add(o);
+							break;
+						}
+					}
+				}
+				
+				System.out.println(product.toString());
+				
 				Quote quote = new Quote();
 				quote.setClient(user);
 				quote.setProduct(product);
 				quote.setOptions(options);
 				quote.setDateCreation(Calendar.getInstance().getTime());
+				System.out.println("NEW QUOTE: "+quote.toString());
 
 				QuoteDAO qDao = new QuoteDAO(connection);
 				qDao.addNewQuote(quote);
 				// Redirect to the Home page
-				session.removeAttribute("chosenQuote");
-				session.removeAttribute("product");
+				//session.removeAttribute("chosenQuote");
+				//session.removeAttribute("product");
 				session.removeAttribute("userQuotes");
-				session.removeAttribute("chosenOptions");
-				session.removeAttribute("availableOptions");
-				path = "Home";
-				response.sendRedirect(path);
+				//session.removeAttribute("chosenOptions");
+				//session.removeAttribute("availableOptions");
+				response.setStatus(HttpServletResponse.SC_OK);
 			} else {
 				throw new Exception();
 			}
 		} catch (Exception e) {
-			path = URLHandler.CLIENT_HOME;
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
+			System.out.println(e.getMessage());
+			//System.out.println(product.toString());
+			//System.out.println(options.toString());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println("BAD REQUEST");
+			return;
 		}
 	}
 

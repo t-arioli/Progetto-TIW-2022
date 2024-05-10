@@ -23,7 +23,7 @@ import it.project.bean.User;
  */
 @WebServlet("/GetQuoteDetails/*")
 public class GetQuoteDetails extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+/*	private static final long serialVersionUID = 1L;
 
 	public GetQuoteDetails() {
 		super();
@@ -36,7 +36,7 @@ public class GetQuoteDetails extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
-	 */
+	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
@@ -48,7 +48,7 @@ public class GetQuoteDetails extends HttpServlet {
 	 * 
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
-	 */
+	 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,5 +83,5 @@ public class GetQuoteDetails extends HttpServlet {
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Wrong id");
 		} 
-	}
+	}*/
 }

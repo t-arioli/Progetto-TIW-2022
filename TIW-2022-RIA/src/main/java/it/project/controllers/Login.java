@@ -68,6 +68,7 @@ public class Login extends HttpServlet {
 				throw new NullPointerException();
 			}
 		}catch(NullPointerException e) {
+			//System.out.println(e.getLocalizedMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 			response.getWriter().println("Credentials must be not null");
 			return;
@@ -77,12 +78,14 @@ public class Login extends HttpServlet {
 			user = uDao.checkCredentials(username, password);
 		}
 		catch(SQLException e) {
+			//System.out.println(e.getLocalizedMessage());
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			response.getWriter().println("Internal server error");
 			return;
 		}
 		//check user exists
 		if (user == null) {
+			//System.out.println("USER NULL");
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			response.getWriter().println("Wrong username or password");
 			return;
@@ -93,6 +96,7 @@ public class Login extends HttpServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			response.getWriter().write(json);
+			//System.out.println(json);
 		}
 	}
 
