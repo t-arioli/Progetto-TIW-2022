@@ -35,7 +35,6 @@ version="4.0">
     	<url-pattern>/GetQuotes</url-pattern> 
     	<url-pattern>/GetProductsList</url-pattern>
     	<url-pattern>/CreateQuote</url-pattern>
-    	<url-pattern>/AddOption</url-pattern>
     	<url-pattern>/AddPrice/*</url-pattern>
  	</filter-mapping> 
  	<filter>

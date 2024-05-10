@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import it.project.bean.Option;
@@ -181,16 +182,16 @@ public class QuoteDAO {
 		}
 	}
 
-	public void addPrice(User user, Quote quote, float price) throws SQLException {
+	public void addPrice(User user, int quote, float price) throws SQLException {
 		int code;
 		String query = "UPDATE `quote` SET `price` = ?, `dateValidation` = ?, `employee` = ? WHERE `id` = ?";
 		PreparedStatement pstatement = null;
 		try {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setFloat(1, price);
-			pstatement.setDate(2, new java.sql.Date(quote.getDateCreation().getTime()));
+			pstatement.setDate(2, new java.sql.Date(System.currentTimeMillis()));
 			pstatement.setString(3, user.getUsername());
-			pstatement.setInt(4, quote.getId());
+			pstatement.setInt(4, quote);
 			code = pstatement.executeUpdate();
 			if (code == 0)
 				throw new SQLException();

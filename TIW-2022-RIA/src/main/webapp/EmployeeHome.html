@@ -3,17 +3,24 @@
 <head>
 	<meta charset="ISO-8859-1">
 	<title>Home</title>
-	<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css"/>
+	<link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css"/>
+	<script src="SCRIPTS/Employee.js" charset="UTF-8" defer></script>
+	<script src="SCRIPTS/Utils.js" charset="UTF-8" defer></script>
 </head>
 <body>
 	<h1>Home</h1>
-	<p>Bentornato utente</p>
+	<div id="logout">
+		<a href="Logout" id="logout_href">Logout</a>
+	</div>
+	<div id="welcome">
+		<p>Bentornato <span id="username"></span></p>
+	</div>
 	
 	<div id="quotes">
 		<h2>I tuoi preventivi</h2>
-		<div id="employee-quotes-list" class="list">
+		<div class="list">
 			<h3>Lista preventivi</h3>
-				<table>
+				<table id="quotesList_container">
 					<thead>
 						<tr>
 							<th>ID</th>
@@ -24,26 +31,18 @@
 							<th>DATA VALIDAZIONE</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>0</td>
-							<td>Cliente</td>
-							<td>Prodotto</td>
-							<td>1970-01-01</td>
-							<td>0.00</td>
-							<td>1970-01-01</td>
-						</tr>
-					</tbody>
+					<tbody id="quotesList_list"></tbody>
 				</table>
-			<p id="notification"> Non ci sono preventivi da visualizzare</p>	
+				<p><span id="quotesList_alert" class="serverMessage"></span><p>
 		</div>  
 	</div>
 	
 	<div id="new-quote">
 		<h2>Nuovi preventivi disponibili</h2>
-		<div id="employee-quotes-list" class="list">
+		<div id="newQuotes-list" class="list">
 			<h3>Lista preventivi</h3>
-				<table>
+			<a id="newQuotesList_call"></a> 
+				<table id="newQuotesList_container">
 					<thead>
 						<tr>
 							<th>DATA CREAZIONE</th>
@@ -52,25 +51,48 @@
 							<th>AGGIUNGI PREZZO</th>
 						</tr>
 					</thead>
-					<tbody>
-						<tr>
-							<td>1970-01-01</td>
-							<td>Cliente</td>
-							<td>Prodotto</td>
-							<td><a href="GetQuoteDetails(prevId=">Aggiungi prezzo</a></td>
-						</tr>
-					</tbody>
+					<tbody id="newQuotesList_list"></tbody>
 				</table>
-			<p id="notification">Non ci sono nuovi preventivi</p>
+				<p id="newQuotesList_alert" class="serverMessage"></p>
 		</div>  
 	</div>
 	
-	<div id="logout">
-		<h2>Sessione</h2>
-		<form action="/Logout" method="GET">
-			<input type="submit" value="Esci">
-		</form>
-	</div>
+	<div id="quote-details" class="info">
+		<h3>Dettagli</h3>
+			<table>
+				<tbody>
+					<tr>
+						<td>ID</td>
+						<td id="quoteDetails_id"></td>
+					</tr>
+					<tr>
+						<td>CLIENTE</td>
+						<td><img id="quoteDetails_client" class="image"></td>
+					</tr>
+					<tr>
+						<td>DATA CREAZIONE</td>
+						<td id="quoteDetails_dateCreation"></td>
+					</tr>
+					<tr>
+						<td>PRODOTTO</td>
+						<td id="quoteDetails_product"></td>
+					</tr>
+					<tr>
+						<td>OPZIONI AGGIUNTE</td>
+						<td id="quoteDetails_options"><ul><li id="quoteDetails_option"></li></ul></td>
+					</tr>
+					<tr>
+						<td>INVIA PREZZO</td>
+						<td id="quoteDetails_price">
+							<form action = "#">
+								<input type="text" name="price" required>
+								<input id="addPriceButton"type="submit" value="Invia prezzo">
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	
 </body>
 </html>

@@ -4,23 +4,18 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-
-import it.project.bean.Quote;
+import org.apache.commons.lang.StringEscapeUtils;
 import it.project.bean.User;
 import it.project.dao.QuoteDAO;
 import it.project.utils.ConnectionHandler;
-import it.project.utils.TemplateHandler;
-import it.project.utils.URLHandler;
 
 /**
  * Adds the price to a quote in the DB from a Employee session's request. If the
@@ -29,10 +24,10 @@ import it.project.utils.URLHandler;
  * HTML page)
  */
 @WebServlet("/AddPrice/*")
+@MultipartConfig
 public class AddPrice extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
-	private TemplateEngine templateEngine;
 
 	public AddPrice() {
 		super();
@@ -40,7 +35,6 @@ public class AddPrice extends HttpServlet {
 
 	public void init() throws ServletException {
 		this.connection = ConnectionHandler.getConnection(getServletContext());
-		this.templateEngine = TemplateHandler.setTemplate(getServletContext());
 	}
 
 	/**
@@ -61,25 +55,21 @@ public class AddPrice extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
-		Quote quote = (Quote) session.getAttribute("chosenQuote");
 		User admin = (User) session.getAttribute("user");
 		float price = -1;
-		String path = "";
+		int quote;
 		try {
-			price = Float.parseFloat(request.getParameter("price"));
+			price = Float.parseFloat(StringEscapeUtils.escapeJava(request.getParameter("price")));
+			quote = Integer.parseInt(StringEscapeUtils.escapeJava(request.getParameter("id")));
 			QuoteDAO qDao = new QuoteDAO(connection);
 			qDao.addPrice(admin, quote, price);
-			session.removeAttribute("userQuotes");
-			session.removeAttribute("chosenQuote");
-			path = "Home";
-			response.sendRedirect(path);
+			response.setStatus(HttpServletResponse.SC_OK);
 
 		} catch (SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(e.getMessage());
-			path = URLHandler.QUOTE_PRICE;
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			templateEngine.process(path, ctx, response.getWriter());
+			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+			response.getWriter().println(e.getMessage());
+			return;
 		}
 	}
 
