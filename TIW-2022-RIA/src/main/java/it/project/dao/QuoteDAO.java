@@ -155,7 +155,6 @@ public class QuoteDAO {
 			if (code == 0)
 				throw new SQLException();
 			resultSet = pstatement.getGeneratedKeys();
-			System.out.println(resultSet.toString());
 			resultSet.next();
 			int id = resultSet.getInt(1);
 

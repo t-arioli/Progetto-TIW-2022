@@ -41,7 +41,7 @@
 					if(req.readyState == XMLHttpRequest.DONE) {	
 						if(req.status == 200){
 							var quotes = JSON.parse(req.responseText);
-							console.log(quotes);
+							//console.log(quotes);
 							self.update(quotes);
 							if(quotes.length == 0){
 								console.log(self.textAlert);
@@ -60,6 +60,10 @@
 		
 		this.update = function(quotes){
 			var row, cell_date, cell_price, cell_link, a, p;
+			
+			while(this.list.firstChild){
+				this.list.removeChild(this.list.lastChild);
+			}
 			
 			quotes.forEach(function(quote){
 				row = document.createElement("tr");
@@ -285,23 +289,6 @@
 				"click",
 				() => {
 					if(self.product != null && self.chosenOptions.length != 0){
-						/*
-						var data = new Array();
-						data.push(self.product.code);
-						self.chosenOptions.forEach((e) => data.push(e.code));
-						console.log(data);
-						makeJSONPostCall(
-							"CreateQuote",
-							data, 
-							function(res){
-								if(res.status == 200){
-									self.reset();
-									quotesList.show();
-								}else{
-									console.log(res.status);
-								}
-							}
-						)*/
 						var form, prod, opt;
 						//<form action = '#'>
 						form = document.createElement("form");
@@ -320,7 +307,7 @@
 							opt.value = o.code;
 							form.appendChild(opt);
 						});
-						console.log(form);
+						//console.log(form);
 						makePostCall(
 							"CreateQuote",
 							form, 
@@ -335,9 +322,7 @@
 						);
 					}
 				}
-			);
-
-			
+			);			
 		};
 		
 		this.addOption = function(option) {

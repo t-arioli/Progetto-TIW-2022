@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.google.gson.Gson;
-
 import it.project.bean.Option;
 import it.project.bean.Product;
 import it.project.bean.Quote;
@@ -82,14 +80,14 @@ public class CreateQuote extends HttpServlet {
 					}
 				}
 				
-				System.out.println(product.toString());
+				//System.out.println(product.toString());
 				
 				Quote quote = new Quote();
 				quote.setClient(user);
 				quote.setProduct(product);
 				quote.setOptions(options);
 				quote.setDateCreation(Calendar.getInstance().getTime());
-				System.out.println("NEW QUOTE: "+quote.toString());
+				//System.out.println("NEW QUOTE: "+quote.toString());
 
 				QuoteDAO qDao = new QuoteDAO(connection);
 				qDao.addNewQuote(quote);
