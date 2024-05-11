@@ -77,21 +77,20 @@
 				row.appendChild(cell_client);
 				
 				cell_prod = document.createElement("td");
-				cell_prod.textContent = quote.product;
+				cell_prod.textContent = quote.product.name;
 				row.appendChild(cell_prod);
 				
 				cell_dataC = document.createElement("td");
 				cell_dataC.textContent = quote.dateCreation;
 				row.appendChild(cell_dataC);
 				
-				cell_dataV = document.createElement("td");
-				cell_dataV.textContent = quote.dateValidation;
-				row.appendChild(cell_dataV);
-				
 				cell_price = document.createElement("td");
 				cell_price.textContent = quote.price;
 				row.appendChild(cell_price);
 				
+				cell_dataV = document.createElement("td");
+				cell_dataV.textContent = quote.dateValidation;
+				row.appendChild(cell_dataV);
 	
 				self.list.appendChild(row); //append each table row <tr> as this.list child
 			});
@@ -107,7 +106,7 @@
 		
 		this.start = function(anchor){
 			anchor.href = "#";
-			var p = document.createTextNode("Refresh products");
+			var p = document.createTextNode("Refresh quotes");
 			anchor.appendChild(p);
 			
 			anchor.addEventListener(
@@ -152,7 +151,7 @@
 				row.appendChild(cell_data);
 				
 				cell_client = document.createElement("td");
-				cell_client.textContent = quote.dateCreation;
+				cell_client.textContent = quote.client.username;
 				row.appendChild(cell_client);
 				
 				cell_prod = document.createElement("td");
@@ -189,9 +188,10 @@
 	}
 	
 	//display all the quotes info 
-	function QuoteDetails(_container, _quote){
+	function QuoteDetails(_container, _quote, _alert){
 		this.quoteHTML = _quote; //the elements in the HTML that display the infos
 		this.container = _container;
+		this.alert = _alert;
 		this.quoteBean;// the object quote 
 		var self = this;
 		
@@ -224,7 +224,7 @@
 					var prod = document.createElement("input");
 					prod.type = "text";
 					prod.name = "id";
-					prod.value = e.target.closest("quoteDetails_id");
+					prod.value = this.quoteBean.id;
 					form.appendChild(prod);
 					if(form.checkValidity()){
 						makePostCall(
@@ -232,19 +232,25 @@
 							form,
 							function (res){
 								if(res.readyState == XMLHttpRequest.DONE) {	
+									//console.log(res.status);
 									if(res.status == 200) {
 										self.reset();
 										quotesList.show();
+										newQuotes.load();
+									}else{
+										self.alert.textContent = res.responseText;
 									}
 								}
 							}
 						);
 					}
+					form.removeChild(form.lastChild); //remove fake input
 				});
 			this.container.style.visibility = "visible";
 		};
 		this.reset = function(){
 			this.container.style.visibility = "hidden";
+			this.alert.textContent = null;
 		};
 	}
 	
@@ -279,7 +285,8 @@
 					  product: document.getElementById("quoteDetails_product"),
 					  options: document.getElementById("quoteDetails_options"),
 					  button: document.getElementById("addPriceButton")
-				  }
+				  },
+				  document.getElementById("quoteDetails_alert")
 			  );
 			  //LOGOUT
 			  document.getElementById("logout_href").addEventListener(

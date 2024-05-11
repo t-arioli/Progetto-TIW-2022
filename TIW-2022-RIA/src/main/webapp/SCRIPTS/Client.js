@@ -190,7 +190,12 @@
 				
 				cell_img = document.createElement("td");
 				img = document.createElement("img");
-				img.src = prod.imageUrl;
+				img.setAttribute("class", "image");
+				if(prod.imageUrl == null){
+					img.src = "IMAGES/default.jpg";
+				}else{
+					img.src = "IMAGES/"+prod.imageUrl;
+				}
 				cell_img.appendChild(img);
 				row.appendChild(cell_img);
 				
@@ -314,7 +319,7 @@
 									self.reset();
 									quotesList.show();
 								}else{
-									console.log(res.responseText);
+									//console.log(res.responseText);
 								}
 							}
 						);

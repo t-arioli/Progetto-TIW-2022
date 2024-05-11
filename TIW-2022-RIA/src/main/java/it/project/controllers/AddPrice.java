@@ -68,7 +68,9 @@ public class AddPrice extends HttpServlet {
 		} catch (SQLException | NullPointerException | NumberFormatException e) {
 			System.out.println(e.getMessage());
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().println(e.getMessage());
+			response.setCharacterEncoding("utf-8");
+			response.getWriter().println("BAD REQUEST");
+			response.setContentType("text/html");
 			return;
 		}
 	}
